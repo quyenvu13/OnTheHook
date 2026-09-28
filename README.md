@@ -27,16 +27,23 @@ The pair “The backlog will be cleared” and “The backlog will be worked on 
 
 The packaged source and Studio-returned source have the same canonical SHA-256. Line endings are normalized only for the parity calculation.
 
-## How to try it
+## Verified live records
 
-Use two StudioNet wallets to exercise both named sides. Each tester should open fresh records; the path does not depend on shared demo state.
+The Project-address runtime path was completed on 2026-09-28 with two StudioNet wallets. These are real contract records, not seeded frontend data.
 
-1. Open the dApp, connect Wallet A, and stay on StudioNet 61999.
-2. In Open, enter Wallet B, label it “the Client”, and submit: “The backlog will be cleared.”
-3. Load the resulting ID. Confirm RESULT, OPEN, the Claim / Rebuttal pair, and the disabled Add log entry method with its exact contract reason.
-4. As Wallet A, claim discharge. Confirm Claim: 1 of 1 and state CLAIMED.
-5. As Wallet A, open: “The backlog will be worked on daily.” Confirm EFFORT, RUNNING, no completed state, and the disabled Claim discharge method with its exact contract reason.
-6. Switch to Wallet B and add a log entry. Confirm the entry displays Wallet B and the count reads Log: 1 entry, no end state.
+| Shape | Undertaking ID | Finalized post-state |
+|---|---|---|
+| RESULT | `2524e0f7a877a53d1efeaf4cc58491dee0d5ea71c66135398c0c5a767c24452f` | `RESULT_OWED`, `CLAIMED`, Claim 1 of 1 |
+| EFFORT | `88ddebfc95caf86104a2cb4547593d85b37db1a85aca055c7e5ac01395a3de8d` | `EFFORT_OWED`, `RUNNING`, Log 1 entry, no end state |
+
+Read-only reviewer path:
+
+1. Open the hosted dApp from the submission Website link and confirm StudioNet 61999 with contract `0x3B7B…7166`.
+2. Load the RESULT ID in the first slot and the EFFORT ID in the second slot.
+3. Confirm the RESULT card is `CLAIMED`, contains “The backlog has been cleared.”, shows Claim: 1 of 1, and disables Add log entry with the RESULT-specific reason.
+4. Confirm the EFFORT card remains `RUNNING`, contains Wallet B’s “Daily work has started.” entry, shows Log: 1 entry, no end state, and disables Claim discharge with the EFFORT-specific reason.
+
+`RUNTIME_EVIDENCE.md` records the four finalized transaction hashes, leader `SUCCESS` results, semantic outputs, callers, and direct latest-final post-state reads.
 
 The UI derives each undertaking ID locally with Python-compatible whitespace and code-point rules. It probes finalized state before opening, so an existing ID is blocked before a transaction is sent.
 
@@ -59,7 +66,7 @@ Requirements: Node.js 22 or newer and Python 3.12.
     python3 -m genvm_linter.cli lint contracts/OutcomeOwed.py
     npm run verify:onchain
 
-The networked verifier checks the Project address, finalized deploy execution, live get_limits response, and on-chain source hash. The offline check runs the production-source state-machine suite, Unicode ID parity, receipt handling, HTML escaping, frontend static gates, source parity, typecheck, and production build.
+The networked verifier checks the Project address, finalized deploy execution, live get_limits response, on-chain source hash, all four proven interaction receipts, both semantic outputs, and both latest-final records. The offline check runs the production-source state-machine suite, Unicode ID parity, receipt handling, HTML escaping, frontend static gates, source parity, typecheck, and production build.
 
 ## Architecture
 
@@ -82,8 +89,8 @@ The networked verifier checks the Project address, finalized deploy execution, l
 
 ## Further evidence
 
-- TESTING.md records exact local gate results and the remaining six-step browser proof.
-- RUNTIME_EVIDENCE.md separates verified deployment facts from Project interactions that have not yet been run.
+- TESTING.md records the completed local and live gates plus a four-step read-only reviewer path.
+- RUNTIME_EVIDENCE.md records the finalized Project interactions, semantic outputs, callers, and post-state.
 - PROJECT_DEPLOYMENT_EVIDENCE.md records source parity and deploy execution.
 - LOCKED_SPEC.md describes the semantic boundary and deterministic consequences.
 

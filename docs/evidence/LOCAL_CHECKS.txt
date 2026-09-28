@@ -11,7 +11,7 @@ python3 -m unittest discover -s tests -p test_*.py -v
   PASS — 22 production-source tests; rc 0
 
 node --test tests/*.test.mjs
-  PASS — 24 browser-library tests; rc 0
+  PASS — 26 browser-library tests; rc 0
 
 node tools/verify-project.mjs
   PASS — four static Project gate groups; rc 0
@@ -22,5 +22,8 @@ npm run verify:source
 npm run build
   PASS — TypeScript project build and Vite production bundle; rc 0
 
-Direct StudioNet read
+npm run verify:onchain
   PASS — Project address source parity, finalized deploy with leader SUCCESS, and OutcomeOwed v1.0 get_limits response.
+  PASS — four Project interaction transactions FINALIZED with leader SUCCESS.
+  PASS — semantic outputs RESULT_OWED and EFFORT_OWED.
+  PASS — latest-final RESULT state CLAIMED and EFFORT state RUNNING with one Wallet B log entry.
