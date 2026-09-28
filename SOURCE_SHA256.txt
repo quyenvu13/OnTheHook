@@ -1,0 +1,7 @@
+41e8ed9e10d1486e003c9fcede2f94a1b7a3b9894924f54cac1ddec847e6543d  contracts/OutcomeOwed.py
+
+Frozen canonical SHA-256: CRLF normalized to LF and one final LF ignored.
+Packaged raw SHA-256: 393e2ee3516330abc952b7e5afb223620c65a77c997a4dc7dc07a711721363e2
+Canonical deployed/package parity: PASS
+Project contract: 0x3B7BEb7cB1FDfEeDa58B89a77a77853CfAbc7166
+Project deployment tx: 0xed4664553ef2d8035deee20ba5c08755ba4c3bac414c6a4a07fb8ae8b3b1856e

@@ -1,0 +1,26 @@
+OnTheHook Project local verification — 2026-09-28
+
+python3 OUTCOMEOWED_KILLSET_CHECK.py contracts/OutcomeOwed.py
+  PASS — NO LEAK; rubric overlap PASS; rc 0
+
+python3 -m genvm_linter.cli lint contracts/OutcomeOwed.py
+  PASS — 2 checks; rc 0
+  Non-blocking warnings: four view methods omit return annotations, matching the proven v0.2 dynamic dict/list return pattern.
+
+python3 -m unittest discover -s tests -p test_*.py -v
+  PASS — 22 production-source tests; rc 0
+
+node --test tests/*.test.mjs
+  PASS — 24 browser-library tests; rc 0
+
+node tools/verify-project.mjs
+  PASS — four static Project gate groups; rc 0
+
+npm run verify:source
+  PASS — source SHA-256 41e8ed9e10d1486e003c9fcede2f94a1b7a3b9894924f54cac1ddec847e6543d; rc 0
+
+npm run build
+  PASS — TypeScript project build and Vite production bundle; rc 0
+
+Direct StudioNet read
+  PASS — Project address source parity, finalized deploy with leader SUCCESS, and OutcomeOwed v1.0 get_limits response.
