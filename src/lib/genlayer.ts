@@ -8,23 +8,15 @@ import {
   STUDIONET_CHAIN_HEX,
   STUDIONET_CHAIN_ID
 } from "./config";
-import { containsMessage } from "./errors";
+import { containsMessage } from "./errors.js";
 import { receiptVerdict } from "./receipt.js";
+import { createSplitProvider } from "./rpc-provider.js";
 import type {
   Limits,
   LogEntry,
   RecordBundle,
   Undertaking
 } from "./types";
-
-const WALLET_METHODS = new Set([
-  "eth_accounts",
-  "eth_requestAccounts",
-  "eth_sendTransaction",
-  "eth_signTransaction",
-  "personal_sign",
-  "eth_signTypedData_v4"
-]);
 
 function proxiedChain() {
   const chain: any = studionet as any;
@@ -39,6 +31,33 @@ function proxiedChain() {
 }
 
 const readClient: any = createClient({ chain: proxiedChain() } as any);
+let rpcSequence = 0;
+
+async function sameOriginRequest(request: {
+  method: string;
+  params?: unknown[];
+}): Promise<unknown> {
+  const response = await fetch(RPC_PATH, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: ++rpcSequence,
+      method: request.method,
+      params: request.params ?? []
+    })
+  });
+  const payload = await response.json();
+  if (!response.ok || payload?.error) {
+    const error = new Error(
+      payload?.error?.message || `StudioNet RPC returned HTTP ${response.status}`
+    ) as Error & { code?: unknown; data?: unknown };
+    error.code = payload?.error?.code;
+    error.data = payload?.error?.data;
+    throw error;
+  }
+  return payload?.result;
+}
 
 function ethereum() {
   if (!window.ethereum) throw new Error("MetaMask was not found.");
@@ -180,14 +199,7 @@ export async function requestWallet(): Promise<string> {
 
 function walletClient(account: string) {
   const provider = ethereum();
-  const limitedProvider = {
-    request: (request: { method: string; params?: unknown[] }) => {
-      if (!WALLET_METHODS.has(request.method)) {
-        throw new Error("Unsupported wallet transport method: " + request.method);
-      }
-      return provider.request(request);
-    }
-  };
+  const limitedProvider = createSplitProvider(provider, sameOriginRequest);
   return createClient({
     chain: proxiedChain(),
     account: account as any,
